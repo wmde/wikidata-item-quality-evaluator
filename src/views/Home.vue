@@ -1,17 +1,19 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
+    <h4>
+      This tool calculates the average quality score of several Wikidata Items.
+    </h4>
+    <ItemIdentifierList />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
+import ItemIdentifierList from "@/components/ItemIdentifierList.vue"; // @ is an alias to /src
 
 @Component({
   components: {
-    HelloWorld
+    ItemIdentifierList
   }
 })
 export default class Home extends Vue {}
