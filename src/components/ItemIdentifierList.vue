@@ -2,9 +2,9 @@
   <div class="mt-4">
     <h2>For which items should the average score be calculated?</h2>
     <b-card class="m-4">
-      <b-textarea />
+      <b-textarea v-model="itemList" />
       <p>One item-identifier (like Q1234) on each line</p>
-      <b-button @click="getRevisions" class="mt-2">
+      <b-button @click="getRevisions(itemList)" class="mt-2">
         Assess Item Quality
       </b-button>
     </b-card>
@@ -12,21 +12,36 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Vue } from "vue-property-decorator";
+import ArticleQualityService from "@/ArticleQualityService";
+import store from "@/store";
 
-@Component
-export default class HelloWorld extends Vue {
-  async getRevisions() {
-    const response = await fetch(
-      "https://www.wikidata.org/w/api.php?action=query&format=json&prop=revisions&titles=Q64|Q96"
-    );
+export default Vue.extend({
+  data() {
+    return {
+      itemList: `Q67
+      Q1235`
+    };
+  },
+  computed: {
+    results() {
+      return store.state.results;
+    }
+  },
+  methods: {
+    async getRevisions(itemList: string) {
+      const aq = new ArticleQualityService();
 
-    const data = await response.json();
-    console.log(data);
-
-    return data;
+      // Trim the items to remove any whitespace
+      const articleQuality = await aq.calculateArticleQuality(
+        itemList.split("\n").map(item => item.trim())
+      );
+      console.log({ articleQuality });
+      store.commit("updateResults", Object.values(articleQuality));
+      this.$router.push({ path: "/results" });
+    }
   }
-}
+});
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
