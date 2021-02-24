@@ -1,26 +1,44 @@
 <template>
   <div class="about">
-    <router-link to="/"><b-button>refine item selection</b-button></router-link>
-    <p>Average quality score based on the 234 items selected:</p>
+    <router-link to="/"
+      ><b-button variant="light" class="mb-4 mt-2"
+        >← Refine item selection</b-button
+      ></router-link
+    >
+    <p>
+      Average quality score based on the {{ validResults.length }} items
+      selected:
+    </p>
     <p class="missing" v-if="missingResults.length">
-      {{ missingResults.length }} Identifier can not be processed:
+      {{ missingResults.length }} Identifier{{
+        missingResults.length > 1 && `s`
+      }}
+      can not be processed:
       {{ missingResults.map(result => result.title).join(", ") }}
     </p>
     <p>
-      <span class="lead">{{ totalAverageScore }}</span> Scores can go from 1 to
-      5
+      <span class="total-score">{{ totalAverageScore }}</span> Scores can go
+      from 1 to 5
     </p>
     <ResultsTable v-bind:results="validResults" />
-    <b-button @click="convertToCSV(validResults)">Download as CSV</b-button>
+    <b-button @click="convertToCSV(validResults)" variant="primary" class="mb-4"
+      >➥ Download as CSV</b-button
+    >
     <p>
       The quality scores are created by ORES, a machine learning tool.
-      <a href="">Learn more about how it works</a>
+      <a href="https://ores.wikimedia.org/" target="_blank"
+        >Learn more about how it works</a
+      >
     </p>
   </div>
 </template>
 <style lang="scss" scoped>
 .missing {
-  color: red;
+  color: var(--red);
+}
+.total-score {
+  font-size: 2rem;
+  font-weight: 600;
 }
 </style>
 <script lang="ts">

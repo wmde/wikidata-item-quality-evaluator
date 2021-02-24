@@ -1,8 +1,8 @@
 <template>
   <div class="home">
-    <h4>
+    <p>
       This tool calculates the average quality score of several Wikidata Items.
-    </h4>
+    </p>
     <ItemIdentifierList />
   </div>
 </template>
