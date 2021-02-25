@@ -1,8 +1,16 @@
 // https://docs.cypress.io/api/introduction/api.html
 
-describe("My First Test", () => {
+describe("Item Quality Evaluator Test", () => {
   it("Visits the app root url", () => {
     cy.visit("/");
-    cy.contains("h1", "Welcome to Your Vue.js + TypeScript App");
+    cy.contains("h1", "Itemset Quality Tool");
+  });
+
+  it("Checks the results for an Item", () => {
+    cy.get("textarea");
+    cy.inputText("Q67");
+    cy.get("button").click();
+    cy.url().should("include", "/results");
+    cy.get(".total-score");
   });
 });

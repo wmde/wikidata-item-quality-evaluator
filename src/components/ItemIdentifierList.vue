@@ -26,8 +26,7 @@ import store from "@/store";
 export default Vue.extend({
   data() {
     return {
-      itemList: `Q67
-      Q1235`
+      itemList: ``
     };
   },
   computed: {

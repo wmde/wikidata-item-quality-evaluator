@@ -33,7 +33,7 @@ interface WikidataRevision {
   weightedSum?: number;
   missing?: boolean;
   label: string;
-  score?: any;
+  score?: number;
 }
 
 interface OresScoresResponse {
@@ -104,7 +104,7 @@ class ArticleQualityService {
     return parsed;
   }
 
-  private async getLatestRevisions(
+  public async getLatestRevisions(
     itemList: Array<string>
   ): Promise<WikidataResponseParsed> {
     const queryUrl = `${
@@ -130,7 +130,7 @@ class ArticleQualityService {
     }
   }
 
-  private async getOresScores(
+  public async getOresScores(
     revisions: WikidataResponseParsed
   ): Promise<OresScoresResponse | void> {
     const validRevisions = Object.values(revisions).filter(rev => !rev.missing);
