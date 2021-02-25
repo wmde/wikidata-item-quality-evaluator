@@ -5,11 +5,19 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    results: []
+    results: [],
+    loading: false,
+    error: false
   },
   mutations: {
     updateResults(state, payload) {
       state.results = payload;
+    },
+    setLoading(state, payload) {
+      state.loading = payload;
+    },
+    setError(state, payload) {
+      state.error = payload;
     }
   },
   getters: {

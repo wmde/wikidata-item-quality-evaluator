@@ -2,13 +2,14 @@
   <div class="mt-4">
     <h2>For which items should the average score be calculated?</h2>
     <b-card class="mt-4">
-      <b-textarea v-model="itemList" />
+      <b-textarea v-model="itemList" v-bind:readonly="loading" />
       <p>One item-identifier (like Q1234) on each line</p>
       <b-row align-h="end" no-gutters>
         <b-button
           @click="getRevisions(itemList)"
           class="mt-2"
           variant="primary"
+          v-bind:disabled="loading"
         >
           Assess Item Quality
         </b-button>
@@ -32,19 +33,27 @@ export default Vue.extend({
   computed: {
     results() {
       return store.state.results;
+    },
+    loading() {
+      return store.state.loading;
     }
   },
   methods: {
     async getRevisions(itemList: string) {
       const aq = new ArticleQualityService();
+      store.commit("setLoading", true);
+      try {
+        // Trim the items to remove any whitespace
+        const articleQualityResults = await aq.calculateArticleQuality(
+          itemList.split("\n").map(item => item.trim())
+        );
+        store.commit("updateResults", Object.values(articleQualityResults));
 
-      // Trim the items to remove any whitespace
-      const articleQualityResults = await aq.calculateArticleQuality(
-        itemList.split("\n").map(item => item.trim())
-      );
-
-      store.commit("updateResults", Object.values(articleQualityResults));
-      this.$router.push({ path: "/results" });
+        this.$router.push({ path: "/results" });
+      } catch (e) {
+        store.commit("setError", true);
+      }
+      store.commit("setLoading", false);
     }
   }
 });

@@ -5,7 +5,7 @@
       <a
         v-bind:href="'https://www.wikidata.org/wiki/' + data.item.title"
         target="_blank"
-        >{{ data.value }}</a
+        >{{ data.value || data.item.title }}</a
       >
     </template>
   </b-table>
