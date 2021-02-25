@@ -10,7 +10,7 @@
     </template>
   </b-table>
 </template>
-<script>
+<script lang="ts">
 import { Vue } from "vue-property-decorator";
 export default Vue.extend({
   props: {
@@ -26,7 +26,7 @@ export default Vue.extend({
         {
           key: "score",
           sortable: true,
-          formatter: value => value && value.toFixed(2)
+          formatter: (value: number) => value && value.toFixed(2)
         }
       ]
     };

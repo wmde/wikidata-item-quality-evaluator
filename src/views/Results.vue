@@ -44,7 +44,7 @@
 <script lang="ts">
 import Vue from "vue";
 import store from "@/store";
-import ResultsTable from "@/components/ResultsTable";
+import ResultsTable from "@/components/ResultsTable.vue";
 
 export default Vue.extend({
   components: {
