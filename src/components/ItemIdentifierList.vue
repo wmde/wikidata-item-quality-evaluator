@@ -29,6 +29,16 @@ export default Vue.extend({
       itemList: ``
     };
   },
+  mounted() {
+    if (localStorage.itemList) {
+      this.itemList = localStorage.itemList;
+    }
+  },
+  watch: {
+    itemList(newItemList) {
+      localStorage.itemList = newItemList;
+    }
+  },
   computed: {
     results() {
       return store.state.results;
