@@ -88,11 +88,20 @@ export default Vue.extend({
       const aq = new ArticleQualityService();
       store.commit("setLoading", true);
       try {
+        // Clean up any whitespaces
+        const cleanedItemList = itemList
+          .replace(/^\s*[\r\n]/gm, "")
+          .split("\n");
+
+        // Remove last item if it's a blank line
+        if (cleanedItemList[cleanedItemList.length - 1] == "") {
+          cleanedItemList.pop();
+        }
         // Trim the items to remove any whitespace
-        const articleQualityResults = await aq.calculateArticleQuality(
-          itemList.split("\n").map(item => item.trim())
+        const articleQuality = await aq.calculateArticleQuality(
+          cleanedItemList
         );
-        store.commit("updateResults", Object.values(articleQualityResults));
+        store.commit("updateResults", articleQuality);
 
         this.$router.push({ path: "/results" });
       } catch (e) {

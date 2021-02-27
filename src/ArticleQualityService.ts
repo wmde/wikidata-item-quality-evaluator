@@ -72,7 +72,9 @@ class ArticleQualityService {
 
   // }
   async calculateArticleQuality(itemList: Array<string>) {
-    const revisions = await this.getLatestRevisions(itemList);
+    const { revisions, unprocessedItems } = await this.getLatestRevisions(
+      itemList
+    );
 
     const scores = await this.getOresScores(revisions);
 
@@ -84,7 +86,17 @@ class ArticleQualityService {
       );
     }
 
-    return articleQuality;
+    unprocessedItems.push(
+      ...Object.values(articleQuality)
+        .filter(result => result.missing)
+        .map(item => item.title)
+    );
+
+    const results = Object.values(articleQuality).filter(
+      result => !result.missing
+    );
+
+    return { results, unprocessedItems };
   }
 
   private parseWikidataResponse(
@@ -106,10 +118,25 @@ class ArticleQualityService {
 
   public async getLatestRevisions(
     itemList: Array<string>
-  ): Promise<WikidataResponseParsed> {
+  ): Promise<{
+    revisions: WikidataResponseParsed;
+    unprocessedItems: Array<string>;
+  }> {
+    const itemIdPattern = /Q\d+$/; // Q[any sequence of real numbers]
+    const unprocessedItems: Array<string> = [];
+    const filteredItems: Array<string> = [];
+
+    for (let i = 0; i < itemList.length; i++) {
+      if (itemIdPattern.test(itemList[i])) {
+        filteredItems.push(itemList[i]);
+      } else {
+        unprocessedItems.push(itemList[i]);
+      }
+    }
+
     const queryUrl = `${
       this.wikidataEndpoint
-    }/w/api.php?action=query&format=json&formatversion=2&prop=revisions|entityterms&titles=${itemList.join(
+    }/w/api.php?action=query&format=json&formatversion=2&prop=revisions|entityterms&titles=${filteredItems.join(
       "|"
     )}&origin=*`;
     try {
@@ -124,7 +151,7 @@ class ArticleQualityService {
         throw Error("No revisions found");
       }
 
-      return revisions;
+      return { revisions, unprocessedItems };
     } catch (e) {
       throw "Error getting revisions from Wikidata | " + e.message;
     }

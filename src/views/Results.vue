@@ -6,15 +6,20 @@
       ></router-link
     >
     <p>
-      Average quality score based on the {{ validResults.length }} items
+      Average quality score based on the {{ validResults.length }} item{{
+        validResults.length > 1 ? `s` : ``
+      }}
       selected:
     </p>
-    <p class="missing" v-if="missingResults.length">
-      {{ missingResults.length }} Identifier{{
-        missingResults.length > 1 && `s`
+    <p class="missing" v-if="unprocessedItems.length">
+      <b-icon-exclamation-triangle-fill
+        variant="alert"
+      ></b-icon-exclamation-triangle-fill>
+      {{ unprocessedItems.length }} Identifier{{
+        unprocessedItems.length > 1 ? `s` : ``
       }}
       can not be processed:
-      {{ missingResults.map(result => result.title).join(", ") }}
+      {{ unprocessedItems.join(", ") }}
     </p>
     <p>
       <span class="total-score">{{ totalAverageScore }}</span> Scores can go
@@ -45,17 +50,19 @@
 import Vue from "vue";
 import store from "@/store";
 import ResultsTable from "@/components/ResultsTable.vue";
+import { BIconExclamationTriangleFill } from "bootstrap-vue";
 
 export default Vue.extend({
   components: {
-    ResultsTable
+    ResultsTable,
+    BIconExclamationTriangleFill
   },
   computed: {
     validResults() {
       return store.getters.validResults;
     },
-    missingResults() {
-      return store.getters.missingResults;
+    unprocessedItems() {
+      return store.state.unprocessedItems;
     },
     totalAverageScore() {
       return store.getters.totalAverageScore.toFixed(2);
