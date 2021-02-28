@@ -1,14 +1,18 @@
 <template>
   <b-button @click="convertToCSV(results)" variant="primary" class="mb-4 mt-4"
-    >➥ Download as CSV</b-button
+    ><b-icon-download class="mr-1"></b-icon-download> Download as CSV</b-button
   >
 </template>
 <script lang="ts">
 import Vue from "vue";
 import store from "@/store";
 import Papa from "papaparse";
+import { BIconDownload } from "bootstrap-vue";
 
 export default Vue.extend({
+  components: {
+    BIconDownload
+  },
   computed: {
     results() {
       return store.state.results;
