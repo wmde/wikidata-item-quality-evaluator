@@ -24,7 +24,7 @@ class ArticleQualityService {
 
   /**
    * Calculates the article quality by Item ID using the Wikidata and ORES API.
-   * If there is more than 50 items, the requests will be batched.
+   * If there is more than 50 Items, the requests will be batched.
    *
    * @param itemList List of Item IDs
    */
@@ -35,7 +35,7 @@ class ArticleQualityService {
     unprocessedItems: Array<string>;
     missingItems: Array<string>;
   }> {
-    // Filter out the items that don't match the pattern: Q[any sequence of real numbers]
+    // Filter out the Items that don't match the pattern: Q[any sequence of real numbers]
     const itemIdPattern = /Q\d+$/;
     const unprocessedItems: Array<string> = [];
     const filteredItems: Array<string> = [];
@@ -75,7 +75,7 @@ class ArticleQualityService {
       }
     });
 
-    // Filter out the items that could not be resolved
+    // Filter out the Items that could not be resolved
     const missingItems = Object.values(articleQuality)
       .filter(result => result.missing)
       .map(item => item.title);
@@ -111,7 +111,7 @@ class ArticleQualityService {
 
   /**
    * Gets the latest revisions for a list of Item IDs from the Wikidata API
-   * Limit of 50 items per request
+   * Limit of 50 Items per request
    *
    * @param itemList Array of Item IDs e.g, Q1234
    */
@@ -157,7 +157,7 @@ class ArticleQualityService {
   /**
    * Splits an Array into chunks
    *
-   * @param arr Array of items
+   * @param arr Array of Items
    * @param len Maximum length of a chunk
    */
   private chunk(arr: Array<string>, len: number) {

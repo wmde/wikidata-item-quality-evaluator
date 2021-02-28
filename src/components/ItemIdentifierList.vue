@@ -1,6 +1,6 @@
 <template>
   <div class="mt-4">
-    <h2>For which items should the average score be calculated?</h2>
+    <h2>For which Items should the average score be calculated?</h2>
     <b-card class="mt-4">
       <b-textarea
         @keydown="onKeyDown"
@@ -8,7 +8,7 @@
         v-model="itemList"
         v-bind:readonly="loading"
       />
-      <p>One item-identifier (like Q1234) on each line</p>
+      <p>One Item-identifier (like Q1234) on each line</p>
       <b-row align-h="end" no-gutters>
         <b-button
           @click="getRevisions(itemList)"
@@ -105,7 +105,7 @@ export default Vue.extend({
         if (cleanedItemList[cleanedItemList.length - 1] == "") {
           cleanedItemList.pop();
         }
-        // Trim the items to remove any whitespace
+        // Trim the Items to remove any whitespace
         const articleQuality = await aq.calculateArticleQuality(
           cleanedItemList
         );
