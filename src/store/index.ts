@@ -1,9 +1,19 @@
+import { Result } from "@/ArticleQualityService.types";
 import Vue from "vue";
 import Vuex from "vuex";
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+interface StoreState {
+  results: Array<Result>;
+  missingItems: Array<string>;
+  unprocessedItems: Array<string>;
+  userHasQueried: boolean;
+  loading: boolean;
+  error: boolean;
+}
+
+export default new Vuex.Store<StoreState>({
   state: {
     results: [],
     missingItems: [],
@@ -17,6 +27,7 @@ export default new Vuex.Store({
       state.results = payload.results;
       state.unprocessedItems = payload.unprocessedItems;
       state.missingItems = payload.missingItems;
+      console.log({ payload });
       state.userHasQueried = true;
     },
     setLoading(state, payload) {
@@ -29,10 +40,9 @@ export default new Vuex.Store({
   getters: {
     totalAverageScore(state) {
       const total = state.results
-        .filter((res: any) => !res.missing)
-        .reduce((acc, result: any) => (acc += result.score), 0);
-      const average =
-        total / state.results.filter((res: any) => !res.missing).length;
+        .filter(res => !res.missing)
+        .reduce((acc, result) => (acc += result.score), 0);
+      const average = total / state.results.filter(res => !res.missing).length;
       return average || 0;
     }
   },

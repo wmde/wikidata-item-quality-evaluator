@@ -1,61 +1,14 @@
 import asyncPool from "tiny-async-pool";
-interface WikidataResponseRaw {
-  query: {
-    pages: {
-      [key: number]: {
-        ns: number;
-        pageid: number;
-        revisions: [
-          {
-            parentid: number;
-            revid: number;
-          }
-        ];
-        title: string;
-        missing?: boolean;
-        entityterms: {
-          alias: Array<string>;
-          description: Array<string>;
-          label: Array<string>;
-        };
-      };
-    };
-  };
-}
-
-interface WikidataResponseParsed {
-  [key: string]: WikidataRevision;
-}
-
-interface WikidataRevision {
-  pageid: number;
-  revid: number;
-  title: string;
-  weightedSum?: number;
-  missing?: boolean;
-  label: string;
-  score?: number;
-}
-
-interface OresScoresResponse {
-  itemquality: {
-    score: OresScore;
-  };
-}
-
-interface OresScore {
-  prediction: string;
-  probability: {
-    [key: string]: number;
-  };
-}
-
+import {
+  WikidataResponseParsed,
+  WikidataResponseRaw,
+  OresScoresResponse,
+  OresScore,
+  Result
+} from "./ArticleQualityService.types";
 class ArticleQualityService {
-  private taskQueue = [];
-
   private batchSize = 50;
   private maxWorkers = 2;
-  private requestDelay = 500;
 
   private oresHost = "https://ores.wikimedia.org";
   private weights: { [key: string]: number } = {
@@ -69,11 +22,21 @@ class ArticleQualityService {
   private modelName = "itemquality";
   private wikidataEndpoint = "https://www.wikidata.org";
 
-  // constructor() {
-
-  // }
-  async calculateArticleQuality(itemList: Array<string>) {
-    const itemIdPattern = /Q\d+$/; // Q[any sequence of real numbers]
+  /**
+   * Calculates the article quality by Item ID using the Wikidata and ORES API.
+   * If there is more than 50 items, the requests will be batched.
+   *
+   * @param itemList List of Item IDs
+   */
+  async calculateArticleQuality(
+    itemList: Array<string>
+  ): Promise<{
+    results: Array<Result>;
+    unprocessedItems: Array<string>;
+    missingItems: Array<string>;
+  }> {
+    // Filter out the items that don't match the pattern: Q[any sequence of real numbers]
+    const itemIdPattern = /Q\d+$/;
     const unprocessedItems: Array<string> = [];
     const filteredItems: Array<string> = [];
 
@@ -85,22 +48,24 @@ class ArticleQualityService {
       }
     }
 
+    // Get the latest revisions
     const batchRevisions = await asyncPool(
       this.maxWorkers,
       this.chunk(filteredItems, this.batchSize),
       input => this.getLatestRevisions(input)
     );
 
+    // Get the ORES scores for the revisions
     const batchScores = await asyncPool(
       this.maxWorkers,
       batchRevisions,
       input => this.getOresScores(input)
     );
-    const articleQuality: WikidataResponseParsed = Object.assign(
-      {},
-      ...batchRevisions.flat()
-    );
 
+    // Assign the scores to the revisions
+    const articleQuality: {
+      [key: string]: Result;
+    } = Object.assign({}, ...batchRevisions.flat());
     batchScores.map(scores => {
       for (const [key, value] of Object.entries(scores || {})) {
         articleQuality[key].score = this.computeWeightedSum(
@@ -109,6 +74,7 @@ class ArticleQualityService {
       }
     });
 
+    // Filter out the items that could not be resolved
     const missingItems = Object.values(articleQuality)
       .filter(result => result.missing)
       .map(item => item.title);
@@ -120,6 +86,11 @@ class ArticleQualityService {
     return { results, unprocessedItems, missingItems };
   }
 
+  /**
+   * Prepares the response from the Wikidata API to send to ORES
+   *
+   * @param response Raw JSON response from Wikidata API
+   */
   private parseWikidataResponse(
     response: WikidataResponseRaw
   ): WikidataResponseParsed {
@@ -137,6 +108,12 @@ class ArticleQualityService {
     return parsed;
   }
 
+  /**
+   * Gets the latest revisions for a list of Item IDs from the Wikidata API
+   * Limit of 50 items per request
+   *
+   * @param itemList Array of Item IDs e.g, Q1234
+   */
   public async getLatestRevisions(
     itemList: Array<string>
   ): Promise<WikidataResponseParsed> {
@@ -154,6 +131,11 @@ class ArticleQualityService {
     }
   }
 
+  /**
+   * Gets the ORES scores for a list of revisions
+   *
+   * @param revisions Response from the Wikidata API parsed through parseWikidataResponse()
+   */
   public async getOresScores(
     revisions: WikidataResponseParsed
   ): Promise<OresScoresResponse | void> {
@@ -171,6 +153,12 @@ class ArticleQualityService {
     }
   }
 
+  /**
+   * Splits an Array into chunks
+   *
+   * @param arr Array of items
+   * @param len Maximum length of a chunk
+   */
   private chunk(arr: Array<string>, len: number) {
     const chunks = [];
     let i = 0;
@@ -183,6 +171,11 @@ class ArticleQualityService {
     return chunks;
   }
 
+  /**
+   * Computes the weighted sum of an ORES score object
+   *
+   * @param score An ORES score object
+   */
   private computeWeightedSum(score: OresScore) {
     const clsProba = score.probability;
     let weightedSum = 0;
@@ -193,11 +186,6 @@ class ArticleQualityService {
       }
     }
     return weightedSum;
-  }
-
-  private computeWeightedProportion(score: any) {
-    const weightedSum = this.computeWeightedSum(score);
-    return weightedSum / Math.max.apply(null, Object.values(this.weights));
   }
 }
 
