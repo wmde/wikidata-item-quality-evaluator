@@ -24,10 +24,13 @@ button.not-collapsed svg {
 <script lang="ts">
 import { Vue } from "vue-property-decorator";
 import { BIconArrowDown } from "bootstrap-vue";
+import store from "@/store";
 
 export default Vue.extend({
-  props: {
-    results: Array
+  computed: {
+    results() {
+      return store.state.results;
+    }
   },
   components: {
     BIconArrowDown

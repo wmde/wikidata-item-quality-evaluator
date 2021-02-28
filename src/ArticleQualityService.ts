@@ -71,6 +71,7 @@ class ArticleQualityService {
         articleQuality[key].score = this.computeWeightedSum(
           value.itemquality.score
         );
+        articleQuality[key].probability = value.itemquality.score.probability;
       }
     });
 

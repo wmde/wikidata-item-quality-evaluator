@@ -37,6 +37,9 @@ export interface WikidataRevision {
 
 export interface Result extends WikidataRevision {
   score: number;
+  probability: {
+    [key: string]: number;
+  };
 }
 
 export interface OresScoresResponse {
