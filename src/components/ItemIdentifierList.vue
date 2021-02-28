@@ -8,7 +8,7 @@
         v-model="itemList"
         v-bind:readonly="loading"
       />
-      <p>One item-identifier (like Q1234) on each line</p>
+      <p>One item-identifier (like Q12345) on each line</p>
       <b-row align-h="end" no-gutters>
         <b-button
           @click="getRevisions(itemList)"
