@@ -6,12 +6,12 @@
       ></router-link
     >
     <p>
-      Average quality score based on the {{ validResults.length }} item{{
-        validResults.length > 1 ? `s` : ``
+      Average quality score based on the {{ results.length }} item{{
+        results.length > 1 ? `s` : ``
       }}
       selected:
     </p>
-    <p class="missing" v-if="unprocessedItems.length">
+    <p class="error" v-if="unprocessedItems.length">
       <b-icon-exclamation-triangle-fill
         variant="alert"
       ></b-icon-exclamation-triangle-fill>
@@ -21,12 +21,22 @@
       can not be processed:
       {{ unprocessedItems.join(", ") }}
     </p>
+    <p class="error" v-if="missingItems.length">
+      <b-icon-exclamation-triangle-fill
+        variant="alert"
+      ></b-icon-exclamation-triangle-fill>
+      {{ missingItems.length }} Identifier{{
+        missingItems.length > 1 ? `s` : ``
+      }}
+      could not be found:
+      {{ missingItems.join(", ") }}
+    </p>
     <p>
       <span class="total-score">{{ totalAverageScore }}</span> Scores can go
-      from 1 to 5
+      from 1 (worst quality) to 5 (best quality)
     </p>
-    <ResultsTable v-bind:results="validResults" />
-    <b-button @click="convertToCSV(validResults)" variant="primary" class="mb-4"
+    <ResultsTable v-bind:results="results" />
+    <b-button @click="convertToCSV(results)" variant="primary" class="mb-4 mt-4"
       >➥ Download as CSV</b-button
     >
     <p>
@@ -38,7 +48,7 @@
   </div>
 </template>
 <style lang="scss" scoped>
-.missing {
+.error {
   color: var(--red);
 }
 .total-score {
@@ -57,12 +67,23 @@ export default Vue.extend({
     ResultsTable,
     BIconExclamationTriangleFill
   },
+  beforeRouteEnter(to, from, next) {
+    // Navigate home if entering /results without making a query
+    next(vm => {
+      if (!vm.$store.state.userHasQueried) {
+        vm.$router.replace("/");
+      }
+    });
+  },
   computed: {
-    validResults() {
-      return store.getters.validResults;
+    results() {
+      return store.state.results;
     },
     unprocessedItems() {
       return store.state.unprocessedItems;
+    },
+    missingItems() {
+      return store.state.missingItems;
     },
     totalAverageScore() {
       return store.getters.totalAverageScore.toFixed(2);

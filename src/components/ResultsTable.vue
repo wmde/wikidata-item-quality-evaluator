@@ -1,20 +1,36 @@
 <template>
-  <b-table striped hover :items="results" :fields="fields" caption-top>
-    <template #table-caption>Overview of items and scores</template>
-    <template #cell(label)="data">
-      <a
-        v-bind:href="'https://www.wikidata.org/wiki/' + data.item.title"
-        target="_blank"
-        >{{ data.value || data.item.title }}</a
-      >
-    </template>
-  </b-table>
+  <div>
+    <b-button v-b-toggle.collapse-2 block variant="outline-primary"
+      >Overview of items and scores <b-icon-arrow-down></b-icon-arrow-down
+    ></b-button>
+    <b-collapse id="collapse-2">
+      <b-table striped hover :items="results" :fields="fields" caption-top>
+        <template #cell(label)="data">
+          <a
+            v-bind:href="'https://www.wikidata.org/wiki/' + data.item.title"
+            target="_blank"
+            >{{ data.value || data.item.title }}</a
+          >
+        </template>
+      </b-table>
+    </b-collapse>
+  </div>
 </template>
+<style lang="scss" scoped>
+button.not-collapsed svg {
+  transform: rotate(180deg);
+}
+</style>
 <script lang="ts">
 import { Vue } from "vue-property-decorator";
+import { BIconArrowDown } from "bootstrap-vue";
+
 export default Vue.extend({
   props: {
     results: Array
+  },
+  components: {
+    BIconArrowDown
   },
   data() {
     return {

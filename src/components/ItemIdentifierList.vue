@@ -16,6 +16,10 @@
           variant="primary"
           v-bind:disabled="loading"
         >
+          <b-icon-three-dots
+            v-if="loading"
+            animation="cylon"
+          ></b-icon-three-dots>
           Assess Item Quality
         </b-button>
       </b-row>
@@ -27,6 +31,7 @@
 import { Vue } from "vue-property-decorator";
 import ArticleQualityService from "@/ArticleQualityService";
 import store from "@/store";
+import { BIconThreeDots } from "bootstrap-vue";
 
 const AlphaNumericAndNewlineRegex = /[^a-zA-Z0-9\n]/;
 
@@ -35,6 +40,9 @@ export default Vue.extend({
     return {
       itemList: ``
     };
+  },
+  components: {
+    BIconThreeDots
   },
   mounted() {
     if (localStorage.itemList) {

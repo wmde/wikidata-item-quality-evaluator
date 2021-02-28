@@ -6,7 +6,9 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     results: [],
+    missingItems: [],
     unprocessedItems: [],
+    userHasQueried: false,
     loading: false,
     error: false
   },
@@ -14,6 +16,8 @@ export default new Vuex.Store({
     updateResults(state, payload) {
       state.results = payload.results;
       state.unprocessedItems = payload.unprocessedItems;
+      state.missingItems = payload.missingItems;
+      state.userHasQueried = true;
     },
     setLoading(state, payload) {
       state.loading = payload;
@@ -30,9 +34,6 @@ export default new Vuex.Store({
       const average =
         total / state.results.filter((res: any) => !res.missing).length;
       return average || 0;
-    },
-    validResults(state) {
-      return state.results;
     }
   },
   actions: {},

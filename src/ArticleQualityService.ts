@@ -1,3 +1,4 @@
+import asyncPool from "tiny-async-pool";
 interface WikidataResponseRaw {
   query: {
     pages: {
@@ -72,31 +73,51 @@ class ArticleQualityService {
 
   // }
   async calculateArticleQuality(itemList: Array<string>) {
-    const { revisions, unprocessedItems } = await this.getLatestRevisions(
-      itemList
-    );
+    const itemIdPattern = /Q\d+$/; // Q[any sequence of real numbers]
+    const unprocessedItems: Array<string> = [];
+    const filteredItems: Array<string> = [];
 
-    const scores = await this.getOresScores(revisions);
-
-    const articleQuality = revisions;
-
-    for (const [key, value] of Object.entries(scores || {})) {
-      articleQuality[key].score = this.computeWeightedSum(
-        value.itemquality.score
-      );
+    for (let i = 0; i < itemList.length; i++) {
+      if (itemIdPattern.test(itemList[i])) {
+        filteredItems.push(itemList[i]);
+      } else {
+        unprocessedItems.push(itemList[i]);
+      }
     }
 
-    unprocessedItems.push(
-      ...Object.values(articleQuality)
-        .filter(result => result.missing)
-        .map(item => item.title)
+    const batchRevisions = await asyncPool(
+      this.maxWorkers,
+      this.chunk(filteredItems, this.batchSize),
+      input => this.getLatestRevisions(input)
     );
+
+    const batchScores = await asyncPool(
+      this.maxWorkers,
+      batchRevisions,
+      input => this.getOresScores(input)
+    );
+    const articleQuality: WikidataResponseParsed = Object.assign(
+      {},
+      ...batchRevisions.flat()
+    );
+
+    batchScores.map(scores => {
+      for (const [key, value] of Object.entries(scores || {})) {
+        articleQuality[key].score = this.computeWeightedSum(
+          value.itemquality.score
+        );
+      }
+    });
+
+    const missingItems = Object.values(articleQuality)
+      .filter(result => result.missing)
+      .map(item => item.title);
 
     const results = Object.values(articleQuality).filter(
       result => !result.missing
     );
 
-    return { results, unprocessedItems };
+    return { results, unprocessedItems, missingItems };
   }
 
   private parseWikidataResponse(
@@ -118,40 +139,16 @@ class ArticleQualityService {
 
   public async getLatestRevisions(
     itemList: Array<string>
-  ): Promise<{
-    revisions: WikidataResponseParsed;
-    unprocessedItems: Array<string>;
-  }> {
-    const itemIdPattern = /Q\d+$/; // Q[any sequence of real numbers]
-    const unprocessedItems: Array<string> = [];
-    const filteredItems: Array<string> = [];
-
-    for (let i = 0; i < itemList.length; i++) {
-      if (itemIdPattern.test(itemList[i])) {
-        filteredItems.push(itemList[i]);
-      } else {
-        unprocessedItems.push(itemList[i]);
-      }
-    }
-
+  ): Promise<WikidataResponseParsed> {
     const queryUrl = `${
       this.wikidataEndpoint
-    }/w/api.php?action=query&format=json&formatversion=2&prop=revisions|entityterms&titles=${filteredItems.join(
+    }/w/api.php?action=query&format=json&formatversion=2&prop=revisions|entityterms&titles=${itemList.join(
       "|"
     )}&origin=*`;
     try {
-      const data = await fetch(queryUrl);
-      const response: WikidataResponseRaw = await data.json();
-      const revisions = this.parseWikidataResponse(response);
-
-      const validRevisions = Object.values(revisions).filter(
-        rev => !rev.missing
-      );
-      if (validRevisions.length === 0) {
-        throw Error("No revisions found");
-      }
-
-      return { revisions, unprocessedItems };
+      return await fetch(queryUrl)
+        .then(data => data.json())
+        .then(this.parseWikidataResponse);
     } catch (e) {
       throw "Error getting revisions from Wikidata | " + e.message;
     }
@@ -166,15 +163,24 @@ class ArticleQualityService {
       this.modelName
     }&revids=${validRevisions.map(rev => rev.revid).join("|")}`;
     try {
-      const data = await fetch(queryUrl);
-      const response = await data.json();
-      if (!response.wikidatawiki.scores) {
-        throw Error("Couldn't get scores");
-      }
-      return response.wikidatawiki.scores;
+      return await fetch(queryUrl)
+        .then(data => data.json())
+        .then(response => response.wikidatawiki.scores);
     } catch (e) {
       throw "ORES Error: " + e.message;
     }
+  }
+
+  private chunk(arr: Array<string>, len: number) {
+    const chunks = [];
+    let i = 0;
+    const n = arr.length;
+
+    while (i < n) {
+      chunks.push(arr.slice(i, (i += len)));
+    }
+
+    return chunks;
   }
 
   private computeWeightedSum(score: OresScore) {

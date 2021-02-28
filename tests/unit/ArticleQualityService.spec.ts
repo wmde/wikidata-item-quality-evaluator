@@ -6,7 +6,7 @@ import {
   mockOresScoresResponse,
   mockRevisions,
   mockRevisionsResponse
-} from "./mocks/data";
+} from "./ArticleQualityService.mock";
 
 fetchMock.mock(
   "https://www.wikidata.org/w/api.php?action=query&format=json&formatversion=2&prop=revisions|entityterms&titles=Q67|Q761|Q1235&origin=*",
@@ -42,17 +42,17 @@ describe("ArticleQualityService", () => {
   });
 
   it("calculates the average score for all items", async () => {
-    const scores = await service.calculateArticleQuality([
+    const { results } = await service.calculateArticleQuality([
       "Q67",
       "Q761",
       "Q1235"
     ]);
-    expect(JSON.stringify(scores)).toEqual(
+    expect(JSON.stringify(results)).toEqual(
       JSON.stringify(mockCalculatedOresScores)
     );
   });
 
-  //   it("identifies missing or invalid Item ids", () => {});
+  //   it("filters missing or invalid Item ids", () => {});
 
   //   it("generates a csv from the results", () => {});
 });

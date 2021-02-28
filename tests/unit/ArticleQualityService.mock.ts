@@ -190,26 +190,26 @@ export const mockOresScores = {
   }
 };
 
-export const mockCalculatedOresScores = {
-  "1363285722": {
+export const mockCalculatedOresScores = [
+  {
     pageid: 1068,
     revid: 1363285722,
     title: "Q761",
     label: "Białystok",
     score: 4.828937569695226
   },
-  "1363329108": {
+  {
     pageid: 194,
     revid: 1363329108,
     title: "Q67",
     label: "Airbus",
     score: 4.849424884397425
   },
-  "1367880583": {
+  {
     pageid: 1606,
     revid: 1367880583,
     title: "Q1235",
     label: "Giovanni Leone",
     score: 4.177228682818163
   }
-};
+];
