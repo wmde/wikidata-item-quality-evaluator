@@ -3,7 +3,6 @@
     >➥ Download as CSV</b-button
   >
 </template>
-
 <script lang="ts">
 import Vue from "vue";
 import store from "@/store";
@@ -27,8 +26,6 @@ export default Vue.extend({
         "Probability D": result.probability.D,
         "Probability E": result.probability.E
       }));
-
-      console.log({ results });
 
       const csv = Papa.unparse(results);
       const csvData = new Blob([csv], { type: "text/csv;charset=utf-8;" });

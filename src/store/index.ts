@@ -27,10 +27,12 @@ export default new Vuex.Store<StoreState>({
       state.results = payload.results;
       state.unprocessedItems = payload.unprocessedItems;
       state.missingItems = payload.missingItems;
-      console.log({ payload });
       state.userHasQueried = true;
     },
     setLoading(state, payload) {
+      if (payload) {
+        state.error = false;
+      }
       state.loading = payload;
     },
     setError(state, payload) {

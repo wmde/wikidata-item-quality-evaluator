@@ -113,6 +113,7 @@ export default Vue.extend({
 
         this.$router.push({ path: "/results" });
       } catch (e) {
+        console.error(e);
         store.commit("setError", true);
       }
       store.commit("setLoading", false);
