@@ -103,7 +103,7 @@ class ArticleQualityService {
           revid: page.revisions && page.revisions[0].revid,
           title: page.title,
           missing: page.missing,
-          label: page.entityterms && page.entityterms.label.join(", ")
+          label: page.entityterms && page.entityterms.label?.join(", ")
         })
     );
     return parsed;
