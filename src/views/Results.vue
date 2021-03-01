@@ -35,10 +35,8 @@
       <span class="total-score">{{ totalAverageScore }}</span> Scores can go
       from 1 (worst quality) to 5 (best quality)
     </p>
-    <ResultsTable v-bind:results="results" />
-    <b-button @click="convertToCSV(results)" variant="primary" class="mb-4 mt-4"
-      >➥ Download as CSV</b-button
-    >
+    <ResultsTable />
+    <CSVGenerator />
     <p>
       The quality scores are created by ORES, a machine learning tool.
       <a href="https://ores.wikimedia.org/" target="_blank"
@@ -60,11 +58,13 @@
 import Vue from "vue";
 import store from "@/store";
 import ResultsTable from "@/components/ResultsTable.vue";
+import CSVGenerator from "@/components/CSVGenerator.vue";
 import { BIconExclamationTriangleFill } from "bootstrap-vue";
 
 export default Vue.extend({
   components: {
     ResultsTable,
+    CSVGenerator,
     BIconExclamationTriangleFill
   },
   beforeRouteEnter(to, from, next) {
@@ -87,17 +87,6 @@ export default Vue.extend({
     },
     totalAverageScore() {
       return store.getters.totalAverageScore.toFixed(2);
-    }
-  },
-  methods: {
-    convertToCSV(arr: any, delimiter = ",") {
-      const csv = arr
-        .map((v: any) =>
-          v
-            .map((x: any) => (isNaN(x) ? `"${x.replace(/"/g, '""')}"` : x))
-            .join(delimiter)
-        )
-        .join("\n");
     }
   }
 });

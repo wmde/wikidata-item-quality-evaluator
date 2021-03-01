@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-button v-b-toggle.collapse-2 block variant="outline-primary"
-      >Overview of items and scores <b-icon-arrow-down></b-icon-arrow-down
+      >Overview of Items and scores <b-icon-arrow-down></b-icon-arrow-down
     ></b-button>
     <b-collapse id="collapse-2">
       <b-table striped hover :items="results" :fields="fields" caption-top>
@@ -24,10 +24,13 @@ button.not-collapsed svg {
 <script lang="ts">
 import { Vue } from "vue-property-decorator";
 import { BIconArrowDown } from "bootstrap-vue";
+import store from "@/store";
 
 export default Vue.extend({
-  props: {
-    results: Array
+  computed: {
+    results() {
+      return store.state.results;
+    }
   },
   components: {
     BIconArrowDown
