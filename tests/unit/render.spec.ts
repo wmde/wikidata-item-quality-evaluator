@@ -7,7 +7,7 @@ localVue.component("b-container", BContainer);
 
 describe("App.vue", () => {
   it("renders the application", () => {
-    const title = "Itemset Quality Tool";
+    const title = "Item Quality Evaluator";
     const wrapper = mount(App, {
       stubs: ["router-view"],
       components: {

@@ -5,7 +5,7 @@
         class="logo mb-2"
         src="https://upload.wikimedia.org/wikipedia/commons/6/66/Wikidata-logo-en.svg"
       />
-      <h1>Itemset Quality Tool</h1>
+      <h1>Item Quality Evaluator</h1>
       <router-view />
     </b-container>
   </div>

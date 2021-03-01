@@ -13,7 +13,7 @@ afterEach(() => {
 describe("Item Quality Evaluator Test", () => {
   it("Visits the app root url", () => {
     cy.visit("/");
-    cy.contains("h1", "Itemset Quality Tool");
+    cy.contains("h1", "Item Quality Evaluator");
   });
 
   it("User can input Items", () => {
