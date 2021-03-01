@@ -4,7 +4,14 @@
       >Overview of Items and scores <b-icon-arrow-down></b-icon-arrow-down
     ></b-button>
     <b-collapse id="collapse-2">
-      <b-table striped hover :items="results" :fields="fields" caption-top>
+      <b-table
+        striped
+        hover
+        :items="results"
+        :fields="fields"
+        :sort-by="sortBy"
+        caption-top
+      >
         <template #cell(label)="data">
           <a
             v-bind:href="'https://www.wikidata.org/wiki/' + data.item.title"
@@ -37,6 +44,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      sortBy: "score",
       fields: [
         {
           key: "label",
