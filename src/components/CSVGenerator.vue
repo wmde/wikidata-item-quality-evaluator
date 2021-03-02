@@ -1,5 +1,5 @@
 <template>
-  <b-button @click="convertToCSV(results)" variant="primary" class="mb-4 mt-4"
+  <b-button @click="convertToCSV(results)" variant="light" class="mb-4 mt-4"
     ><b-icon-download class="mr-1"></b-icon-download> Download as CSV</b-button
   >
 </template>
