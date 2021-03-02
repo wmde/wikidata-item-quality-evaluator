@@ -1,14 +1,31 @@
 // Bootstrap Overrides
-$enable-rounded: false;
+$enable-rounded: true;
 $blue: #36c;
 $light: #f8f9fa;
+$secondary:$light;
+
 // Import Bootstrap and BootstrapVue source SCSS files
 @import "~bootstrap/scss/bootstrap.scss";
 @import "~bootstrap-vue/src/index.scss";
 
 .btn-primary {
     font-weight: 700;
-    font-size: 1.125rem;
+}
+
+.btn-secondary {
+    font-weight: 700;
+    border: 1px solid #a2a9b1;
+    color:black;
+    background:$secondary;
+    &:hover{
+        background: white;
+        color: #404244;
+        border-color:#a2a9b1
+    }
+    &:focus{
+        border-color: $blue;
+        background-color:$light;
+    }
 }
 
 .btn-light {

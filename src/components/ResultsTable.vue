@@ -1,7 +1,8 @@
 <template>
   <div>
-    <b-button v-b-toggle.collapse-2 block variant="outline-primary"
-      >Overview of Items and scores <b-icon-arrow-down></b-icon-arrow-down
+    <b-button v-b-toggle.collapse-2 block variant="secondary"
+      >Overview of Items and scores
+      <b-icon-triangle-fill rotate="180" scale="0.5"></b-icon-triangle-fill
     ></b-button>
     <b-collapse id="collapse-2">
       <b-table
@@ -27,10 +28,16 @@
 button.not-collapsed svg {
   transform: rotate(180deg);
 }
+button.not-collapsed {
+  border-bottom: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-color: #dee2e6;
+}
 </style>
 <script lang="ts">
 import { Vue } from "vue-property-decorator";
-import { BIconArrowDown } from "bootstrap-vue";
+import { BIconTriangleFill } from "bootstrap-vue";
 import store from "@/store";
 
 export default Vue.extend({
@@ -40,7 +47,7 @@ export default Vue.extend({
     }
   },
   components: {
-    BIconArrowDown
+    BIconTriangleFill
   },
   data() {
     return {

@@ -1,8 +1,9 @@
 <template>
   <div class="about">
     <router-link to="/"
-      ><b-button variant="light" class="mb-4 mt-2"
-        >← Refine item selection</b-button
+      ><b-button variant="secondary" class="mb-4 mt-2"
+        ><b-icon-chevron-left class="mr-2"></b-icon-chevron-left>Refine item
+        selection</b-button
       ></router-link
     >
     <p>
@@ -59,13 +60,14 @@ import Vue from "vue";
 import store from "@/store";
 import ResultsTable from "@/components/ResultsTable.vue";
 import CSVGenerator from "@/components/CSVGenerator.vue";
-import { BIconExclamationTriangleFill } from "bootstrap-vue";
+import { BIconExclamationTriangleFill, BIconChevronLeft } from "bootstrap-vue";
 
 export default Vue.extend({
   components: {
     ResultsTable,
     CSVGenerator,
-    BIconExclamationTriangleFill
+    BIconExclamationTriangleFill,
+    BIconChevronLeft
   },
   beforeRouteEnter(to, from, next) {
     // Navigate home if entering /results without making a query
