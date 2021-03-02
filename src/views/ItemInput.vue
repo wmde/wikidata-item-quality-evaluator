@@ -5,7 +5,7 @@
     </p>
     <ItemIdentifierList />
     <b-alert variant="danger" v-bind:show="error"
-      >An error occurred processing while your request</b-alert
+      >An error occurred while processing your request</b-alert
     >
   </div>
 </template>
