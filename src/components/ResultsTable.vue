@@ -28,6 +28,12 @@
 button.not-collapsed svg {
   transform: rotate(180deg);
 }
+button.not-collapsed {
+  border-bottom: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-color: #dee2e6;
+}
 </style>
 <script lang="ts">
 import { Vue } from "vue-property-decorator";
