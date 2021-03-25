@@ -22,13 +22,8 @@ export default Vue.extend({
     convertToCSV() {
       const results = this.results.map(result => ({
         "Item label": result.label,
-        "Item QID": result.title,
-        "Weighted ORES Score": result.score,
-        "Probability A": result.probability.A,
-        "Probability B": result.probability.B,
-        "Probability C": result.probability.C,
-        "Probability D": result.probability.D,
-        "Probability E": result.probability.E
+        "Item ID": result.title,
+        "Weighted ORES Score": result.score.toFixed(2)
       }));
 
       const csv = Papa.unparse(results);
