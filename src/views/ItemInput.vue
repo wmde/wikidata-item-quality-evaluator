@@ -29,7 +29,7 @@ import ItemIdentifierList from "@/components/ItemIdentifierList.vue"; // @ is an
 import SPARQLEditor from "@/components/SPARQLEditor.vue";
 import store from "@/store";
 
-export const ACTIVE_TAB_KEY = "wikidata.itemQuality.ui.activeItemsInputTab";
+const ACTIVE_TAB_KEY = "wikidata.itemQuality.ui.activeItemsInputTab";
 
 export default Vue.extend({
   components: {

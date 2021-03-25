@@ -29,7 +29,7 @@ import store from "@/store";
 import { BIconThreeDots } from "bootstrap-vue";
 
 const AlphaNumericAndNewlineRegex = /[^a-zA-Z0-9\n]/;
-export const ITEM_LIST_KEY = "wikidata.itemQuality.ui.itemList";
+const ITEM_LIST_KEY = "wikidata.itemQuality.ui.itemList";
 
 export default Vue.extend({
   data() {
