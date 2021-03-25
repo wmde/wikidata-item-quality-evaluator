@@ -3,7 +3,7 @@ Cypress.Commands.add("inputItemList", text => {
 });
 
 Cypress.Commands.add("getResults", () => {
-  cy.get("button").click();
+  cy.get("button#get-results").click();
   cy.url().should("include", "/results");
 });
 

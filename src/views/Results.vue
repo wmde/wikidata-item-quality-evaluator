@@ -1,13 +1,12 @@
 <template>
   <div class="about">
     <router-link to="/"
-      ><b-button variant="secondary" class="mb-4 mt-2"
-        ><b-icon-chevron-left class="mr-2"></b-icon-chevron-left>Refine item
-        selection</b-button
+      ><b-button variant="light" class="mb-4 mt-2"
+        >← Refine Item selection</b-button
       ></router-link
     >
     <p>
-      Average quality score based on the {{ results.length }} item{{
+      Average quality score based on the {{ results.length }} Item{{
         results.length > 1 ? `s` : ``
       }}
       selected:
@@ -60,14 +59,13 @@ import Vue from "vue";
 import store from "@/store";
 import ResultsTable from "@/components/ResultsTable.vue";
 import CSVGenerator from "@/components/CSVGenerator.vue";
-import { BIconExclamationTriangleFill, BIconChevronLeft } from "bootstrap-vue";
+import { BIconExclamationTriangleFill } from "bootstrap-vue";
 
 export default Vue.extend({
   components: {
     ResultsTable,
     CSVGenerator,
-    BIconExclamationTriangleFill,
-    BIconChevronLeft
+    BIconExclamationTriangleFill
   },
   beforeRouteEnter(to, from, next) {
     // Navigate home if entering /results without making a query

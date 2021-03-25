@@ -148,7 +148,9 @@ class ArticleQualityService {
     try {
       return await fetch(queryUrl)
         .then(data => data.json())
-        .then(response => response.wikidatawiki.scores);
+        .then(
+          response => response.wikidatawiki && response.wikidatawiki.scores
+        );
     } catch (e) {
       throw "ORES Error: " + e.message;
     }
