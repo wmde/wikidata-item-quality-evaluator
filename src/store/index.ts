@@ -10,7 +10,7 @@ interface StoreState {
   unprocessedItems: Array<string>;
   userHasQueried: boolean;
   loading: boolean;
-  error: boolean;
+  error: string | null;
 }
 
 export default new Vuex.Store<StoreState>({
@@ -20,7 +20,7 @@ export default new Vuex.Store<StoreState>({
     unprocessedItems: [],
     userHasQueried: false,
     loading: false,
-    error: false
+    error: null
   },
   mutations: {
     updateResults(state, payload) {
@@ -31,11 +31,16 @@ export default new Vuex.Store<StoreState>({
     },
     setLoading(state, payload) {
       if (payload) {
-        state.error = false;
+        state.error = null;
       }
       state.loading = payload;
     },
     setError(state, payload) {
+      if (payload === true) {
+        state.error =
+          "There was a problem parsing the results from the APIs. This is probably a problem with our code. If you know how, report the issue at [link]";
+        return;
+      }
       state.error = payload;
     }
   },

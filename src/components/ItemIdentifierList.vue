@@ -1,29 +1,24 @@
 <template>
-  <div class="mt-4">
-    <h2>For which Items should the average score be calculated?</h2>
-    <b-card class="mt-4">
-      <b-textarea
-        @keydown="onKeyDown"
-        @paste="onPaste"
-        v-model="itemList"
-        v-bind:readonly="loading"
-      />
-      <p>One Item-identifier (like Q12345) on each line</p>
-      <b-row align-h="end" no-gutters>
-        <b-button
-          @click="getRevisions(itemList)"
-          class="mt-2"
-          variant="primary"
-          v-bind:disabled="loading"
-        >
-          <b-icon-three-dots
-            v-if="loading"
-            animation="cylon"
-          ></b-icon-three-dots>
-          Assess Item Quality
-        </b-button>
-      </b-row>
-    </b-card>
+  <div>
+    <b-textarea
+      @keydown="onKeyDown"
+      @paste="onPaste"
+      v-model="itemList"
+      v-bind:readonly="loading"
+    />
+    <p class="mt-2">One Item-identifier (like Q1234) on each line</p>
+    <b-row align-h="end" no-gutters>
+      <b-button
+        @click="getRevisions(itemList)"
+        class="mt-2"
+        id="get-results"
+        variant="primary"
+        v-bind:disabled="loading || !itemList"
+      >
+        <b-icon-three-dots v-if="loading" animation="cylon"></b-icon-three-dots>
+        Assess Item Quality
+      </b-button>
+    </b-row>
   </div>
 </template>
 
@@ -34,24 +29,20 @@ import store from "@/store";
 import { BIconThreeDots } from "bootstrap-vue";
 
 const AlphaNumericAndNewlineRegex = /[^a-zA-Z0-9\n]/;
+export const ITEM_LIST_KEY = "wikidata.itemQuality.ui.itemList";
 
 export default Vue.extend({
   data() {
     return {
-      itemList: ``
+      itemList: localStorage[ITEM_LIST_KEY]
     };
   },
   components: {
     BIconThreeDots
   },
-  mounted() {
-    if (localStorage.itemList) {
-      this.itemList = localStorage.itemList;
-    }
-  },
   watch: {
     itemList(newItemList) {
-      localStorage.itemList = newItemList;
+      localStorage[ITEM_LIST_KEY] = newItemList;
     }
   },
   computed: {
