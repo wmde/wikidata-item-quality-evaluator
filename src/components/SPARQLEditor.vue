@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="border">
-      <textarea id="sparql"></textarea>
+      <textarea></textarea>
     </div>
     <p class="mt-2">
       You can also prepare your SPARQL query in the
