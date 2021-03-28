@@ -1,32 +1,27 @@
 <template>
-  <div>
-    <b-button v-b-toggle.collapse-2 block variant="secondary"
-      >Overview of Items and scores
-      <b-icon-triangle-fill rotate="180" scale="0.5"></b-icon-triangle-fill
-    ></b-button>
-    <b-collapse id="collapse-2">
-      <b-table
-        striped
-        hover
-        :items="results"
-        :fields="fields"
-        :sort-by="sortBy"
-        caption-top
+  <b-table
+    class="results-list"
+    striped
+    hover
+    :items="results"
+    :fields="fields"
+    caption-top
+  >
+    <template #cell(label)="data">
+      <a
+        v-bind:href="'https://www.wikidata.org/wiki/' + data.item.title"
+        target="_blank"
+        >{{ generateLabel(data) }})</a
       >
-        <template #cell(label)="data">
-          <a
-            v-bind:href="'https://www.wikidata.org/wiki/' + data.item.title"
-            target="_blank"
-            >{{ data.value || data.item.title }}</a
-          >
-        </template>
-      </b-table>
-    </b-collapse>
-  </div>
+    </template>
+  </b-table>
 </template>
-<style lang="scss" scoped>
-button.not-collapsed svg {
-  transform: rotate(180deg);
+<style lang="scss">
+.results-list thead {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  box-shadow: 0 1px 0 0 #dee2e6; /* Border bottom */
 }
 button.not-collapsed {
   border-bottom: 0;
@@ -37,17 +32,20 @@ button.not-collapsed {
 </style>
 <script lang="ts">
 import { Vue } from "vue-property-decorator";
-import { BIconTriangleFill } from "bootstrap-vue";
 import store from "@/store";
 
+interface ResultItem {
+  value: string;
+  item: {
+    title: string;
+  };
+  score: number;
+}
 export default Vue.extend({
   computed: {
     results() {
       return store.state.results;
     }
-  },
-  components: {
-    BIconTriangleFill
   },
   data() {
     return {
@@ -64,6 +62,14 @@ export default Vue.extend({
         }
       ]
     };
+  },
+  methods: {
+    generateLabel(data: ResultItem) {
+      if (data.value) {
+        return `${data.value} (${data.item.title}`;
+      }
+      return data.item.title;
+    }
   }
 });
 </script>

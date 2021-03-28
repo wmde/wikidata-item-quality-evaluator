@@ -35,8 +35,18 @@
       <span class="total-score">{{ totalAverageScore }}</span> Scores can go
       from 1 (worst quality) to 5 (best quality)
     </p>
+    <b-row align-v="end" align-h="between" class="mt-4">
+      <b-col sm="auto" order-sm="2" class="mb-3">
+        <CSVGenerator />
+      </b-col>
+      <b-col order-sm="1" class="mb-3">
+        <strong>
+          Score{{ results.length > 1 ? `s` : `` }} for
+          {{ results.length }} Item{{ results.length > 1 ? `s` : `` }}
+        </strong>
+      </b-col>
+    </b-row>
     <ResultsTable />
-    <CSVGenerator />
     <p>
       The quality scores are created by ORES, a machine learning tool.
       <a href="https://ores.wikimedia.org/" target="_blank"
