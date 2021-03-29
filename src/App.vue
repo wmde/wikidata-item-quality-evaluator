@@ -10,7 +10,7 @@
       </b-row>
       <router-view />
       <footer class="mt-5">
-        <span>Made by the Wikimedia Deutschland Wikidata team.</span>
+        <span>Made by the Wikidata development team.</span>
         <p>
           Licensed under
           <a
