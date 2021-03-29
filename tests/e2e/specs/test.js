@@ -13,7 +13,7 @@ afterEach(() => {
 describe("Item List", () => {
   it("Visits the app root url", () => {
     cy.visit("/");
-    cy.contains("h1", "Item Quality Evaluator Tool");
+    cy.contains("h1", "Item Quality Evaluator");
   });
 
   it("User can input Items", () => {
@@ -52,7 +52,7 @@ describe("SPARQL Query", () => {
 
   it("Visits the app root url", () => {
     cy.visit("/");
-    cy.contains("h1", "Item Quality Evaluator Tool");
+    cy.contains("h1", "Item Quality Evaluator");
   });
 
   it("User can open the SPARQL input tab", () => {

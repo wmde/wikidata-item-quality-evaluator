@@ -4,7 +4,7 @@ const webpack = require("webpack");
 module.exports = {
   chainWebpack: config => {
     config.plugin("html").tap(args => {
-      args[0].title = "Item Quality Evaluator Tool | Wikidata";
+      args[0].title = "Item Quality Evaluator | Wikidata";
       return args;
     });
   },
