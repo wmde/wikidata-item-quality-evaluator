@@ -86,7 +86,7 @@ export default {
 
         this.$router.push({ path: "/results" });
       } catch (e) {
-        console.log("ERROR", e);
+        // console.log("ERROR", this.service.getError());
         store.commit("setLoading", false);
         if (e.status === 400) {
           store.commit(
