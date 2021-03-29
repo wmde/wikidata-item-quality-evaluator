@@ -1,7 +1,10 @@
 <template>
   <div>
     <p>
-      This tool calculates the average quality score of several Wikidata Items.
+      Gets the quality scores of Wikidata Items and calculates their average
+      value.
+      <br />
+      <ORESExplanation />
     </p>
     <div class="mt-4">
       <h2 class="mb-4">
@@ -27,6 +30,7 @@
 import { Vue } from "vue-property-decorator";
 import ItemIdentifierList from "@/components/ItemIdentifierList.vue"; // @ is an alias to /src
 import SPARQLEditor from "@/components/SPARQLEditor.vue";
+import ORESExplanation from "@/components/ORESExplanation.vue";
 import store from "@/store";
 
 const ACTIVE_TAB_KEY = "wikidata.itemQuality.ui.activeItemsInputTab";
@@ -34,7 +38,8 @@ const ACTIVE_TAB_KEY = "wikidata.itemQuality.ui.activeItemsInputTab";
 export default Vue.extend({
   components: {
     ItemIdentifierList,
-    SPARQLEditor
+    SPARQLEditor,
+    ORESExplanation
   },
   data() {
     return {
