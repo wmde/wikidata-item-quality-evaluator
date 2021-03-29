@@ -1,4 +1,4 @@
-# wikidata-quality-monitor
+# Wikidata Item Quality Evaluator
 
 For a live demo, visit the [Wikidata Item Quality Evaluator](https://wikidata-quality-monitor.netlify.app/)
 
