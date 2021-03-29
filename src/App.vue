@@ -6,7 +6,7 @@
           class="logo mr-2"
           src="https://upload.wikimedia.org/wikipedia/commons/e/e4/Wikidata-logo_S.svg"
         />
-        <h1 class="mb-0">Item Quality Evaluator Tool</h1>
+        <h1 class="mb-0">Item Quality Evaluator</h1>
       </b-row>
       <router-view />
       <footer class="mt-5">
