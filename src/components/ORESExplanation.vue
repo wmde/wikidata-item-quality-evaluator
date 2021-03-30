@@ -9,30 +9,38 @@
     >
       <p>
         The Item Quality Evaluator retrieves a quality score for each requested
-        item and also calculates the avarage score of all items requested.
+        Item and also calculates the avarage score of all Items requested.
       </p>
       <p>
         <strong>What does the score measure?</strong>
         <br />
-        The score estimates the quality of the Wikidata item. It can not
+        The score estimates the quality of the Wikidata Item. It takes into account
+        various features of the Item to determine its quality. These include the
+        number of statements, the number of labels in different languages and the
+        percentage of referenced statements.
+      </p>
+      <p>
+        <strong>What does the score not measure?</strong>
+        <br />
+        It can not determine if the data is "true". Furthermore it can not
         estimate if the content should be included on Wikidata or if what the
-        item is about is “good”: The item “famine” (Q168247) can have a high
+        Item is about is “good”: The Item “famine” (Q168247) can have a high
         score if it has references and delivers complete information, while
         “Kitten” (Q147) can score low if it lacks references and statements.
       </p>
       <p>
         <strong>How is the score calculated</strong>
         <br />
-        We trained the ORES Algorithm by giving it items that we scored to
-        belong in one of 5 quality categories. Now, if the algorithm is given an
-        item, it estimates the the likelyhood that a given item falls in each of
-        the 5 possible quality categories. To get one score for an item, we
+        We trained the ORES algorithm by giving it Items that were scored to
+        belong in one of 5 quality categories. Now, if the algorithm is given a new
+        Item, it estimates the the likelyhood that a given Item falls in each of
+        the 5 possible quality categories. To get one score for an Item, we
         weight each category by its likelyhood and calculate an average of the
-        weighted scores, which is the score for a single item.
+        weighted scores, which is the score for a single Item.
       </p>
       <p>
         From several single-item-scores, we calculate the avarage score of all
-        the items that you requested.
+        the Items that you requested.
       </p>
       <p>
         <strong>Where can I find more information?</strong>
