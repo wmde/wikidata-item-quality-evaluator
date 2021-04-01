@@ -22,11 +22,13 @@
       <p>
         <strong>What does the score not measure?</strong>
         <br />
-        It can not determine if the data is "true". Furthermore it can not
-        estimate if the content should be included on Wikidata or if what the
-        Item is about is “good”: The Item “famine” (Q168247) can have a high
-        score if it has references and delivers complete information, while
-        “Kitten” (Q147) can score low if it lacks references and statements.
+        <ul>
+        <li>It cannot determine if the data is "true"</li>
+        <li>It cannot estimate if the content should be included on Wikidata </li>
+        <li>It cannot decide if the Item information is “good”. For instance, The Item “famine” (Q168247) 
+        can have a high score if it has references and delivers complete information, while “Kitten” (Q147)
+        can score low if it lacks references and statements</li>
+      </ul>
       </p>
       <p>
         <strong>How is the score calculated</strong>
