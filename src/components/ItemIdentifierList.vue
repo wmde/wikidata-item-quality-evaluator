@@ -30,7 +30,7 @@ const ITEM_LIST_KEY = "wikidata.itemQuality.ui.itemList";
 export default Vue.extend({
   data() {
     return {
-      itemList: localStorage[ITEM_LIST_KEY]
+      itemList: localStorage[ITEM_LIST_KEY] || ""
     };
   },
   components: {
