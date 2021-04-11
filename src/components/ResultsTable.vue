@@ -65,7 +65,6 @@ export default Vue.extend({
   },
   methods: {
     generateLabel(data: ResultItem) {
-      console.log(data)
       if (data.value) {
         return `${data.value} (${data.item.title})`;
       }
