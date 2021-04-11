@@ -5,6 +5,7 @@
     hover
     :items="results"
     :fields="fields"
+    :sort-by.sync="sortBy"
     caption-top
   >
     <template #cell(label)="data">

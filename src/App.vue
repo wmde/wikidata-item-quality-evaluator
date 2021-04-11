@@ -10,8 +10,8 @@
       </b-row>
       <router-view />
       <footer class="mt-5">
-        <span>Made by the Wikidata development team.</span>
-        <p>
+        <p class="text-muted">
+          <span>Made by the Wikidata development team.</span>
           Licensed under
           <a
             href="https://github.com/wmde/wikidata-item-quality-evaluator/blob/main/LICENSE"
@@ -34,6 +34,9 @@
   </div>
 </template>
 <style lang="scss" scoped>
+h1 {
+  font-family: sans-serif;
+}
 img.logo {
   height: 2rem;
 }

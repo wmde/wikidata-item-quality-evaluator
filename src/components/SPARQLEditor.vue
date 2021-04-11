@@ -9,23 +9,17 @@
       copy it here
     </p>
     <b-row align-h="end" no-gutters>
-      <b-button
-        @click="getRevisions()"
-        class="mt-2"
-        id="get-results"
-        variant="primary"
-        v-bind:disabled="loading"
-      >
-        <b-icon-three-dots v-if="loading" animation="cylon"></b-icon-three-dots>
-        Assess Item Quality
-      </b-button>
+      <v-submit-query-button
+        :loading="loading"
+        :onClick="getRevisions"
+        :disabled="!editorHasValue"
+      ></v-submit-query-button>
     </b-row>
   </div>
 </template>
 
 <script>
 import ArticleQualityService from "@/ArticleQualityService";
-import { BIconThreeDots } from "bootstrap-vue";
 import store from "@/store";
 import "codemirror/lib/codemirror.css";
 import "codemirror/mode/sparql/sparql.js";
@@ -43,16 +37,32 @@ import "wikidata-query-gui/wikibase/queryService/RdfNamespaces.js";
 import "wikidata-query-gui/wikibase/queryService/ui/editor/Editor.js";
 import "wikidata-query-gui/wikibase/queryService/RdfNamespaces.js";
 import "wikidata-query-gui/wikibase/queryService/api/Sparql.js";
+import SubmitQueryButton from "./SubmitQueryButton.vue";
 
 const SPARQL_EDITOR_KEY = "wikibase.queryService.ui.Editor";
 
 export default {
   components: {
-    BIconThreeDots
+    "v-submit-query-button": SubmitQueryButton
+  },
+  data: function() {
+    return {
+      editorHasValue: !!localStorage.getItem(SPARQL_EDITOR_KEY)
+    };
   },
   mounted: function() {
     this.editor = new window.wikibase.queryService.ui.editor.Editor();
     this.service = new window.wikibase.queryService.api.Sparql();
+
+    // Wait for editor to initialize
+    setTimeout(() => {
+      this.editor._editor.on("change", () => {
+        const value = this.editor.getValue();
+        this.editor.storeValue(value);
+        this.editorHasValue = !!value;
+      });
+    }, 10);
+
     this.editor.fromTextArea(this.$el.querySelector("textarea"));
     this.editor.setValue(localStorage.getItem(SPARQL_EDITOR_KEY));
     setTimeout(() => this.editor.refresh(), 200);

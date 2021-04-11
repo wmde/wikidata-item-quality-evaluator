@@ -5,12 +5,6 @@
         >← Refine Item selection</b-button
       ></router-link
     >
-    <p>
-      Average quality score based on the {{ results.length }} Item{{
-        results.length > 1 ? `s` : ``
-      }}
-      selected:
-    </p>
     <p class="error" v-if="unprocessedItems.length">
       <b-icon-exclamation-triangle-fill
         variant="alert"
@@ -30,6 +24,12 @@
       }}
       could not be found:
       {{ missingItems.join(", ") }}
+    </p>
+    <p>
+      Average quality score based on the {{ results.length }} Item{{
+        results.length > 1 ? `s` : ``
+      }}
+      selected:
     </p>
     <p>
       <span class="total-score">{{ totalAverageScore }}</span> Scores can go

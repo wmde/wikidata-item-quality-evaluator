@@ -8,16 +8,12 @@
     />
     <p class="mt-2">One Item-identifier (like Q1234) on each line</p>
     <b-row align-h="end" no-gutters>
-      <b-button
-        @click="getRevisions(itemList)"
-        class="mt-2"
-        id="get-results"
-        variant="primary"
-        v-bind:disabled="loading || !itemList"
+      <v-submit-query-button
+        :loading="loading"
+        :disabled="!itemList"
+        :onClick="getRevisions"
       >
-        <b-icon-three-dots v-if="loading" animation="cylon"></b-icon-three-dots>
-        Assess Item Quality
-      </b-button>
+      </v-submit-query-button>
     </b-row>
   </div>
 </template>
@@ -26,7 +22,7 @@
 import { Vue } from "vue-property-decorator";
 import ArticleQualityService from "@/ArticleQualityService";
 import store from "@/store";
-import { BIconThreeDots } from "bootstrap-vue";
+import SubmitQueryButton from "./SubmitQueryButton.vue";
 
 const AlphaNumericAndNewlineRegex = /[^a-zA-Z0-9\n]/;
 const ITEM_LIST_KEY = "wikidata.itemQuality.ui.itemList";
@@ -38,7 +34,7 @@ export default Vue.extend({
     };
   },
   components: {
-    BIconThreeDots
+    "v-submit-query-button": SubmitQueryButton
   },
   watch: {
     itemList(newItemList) {
@@ -83,13 +79,15 @@ export default Vue.extend({
 
       this.itemList = mergedText;
     },
-    async getRevisions(itemList: string) {
+    async getRevisions() {
+      const itemList = this.itemList;
       const aq = new ArticleQualityService();
       store.commit("setLoading", true);
       try {
         // Clean up any whitespaces
         const cleanedItemList = itemList
           .replace(/^\s*[\r\n]/gm, "")
+          .replaceAll("q", "Q") // Capitalise Q
           .split("\n");
 
         // Remove last item if it's a blank line
