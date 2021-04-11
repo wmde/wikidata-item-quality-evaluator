@@ -1,6 +1,7 @@
 <template>
   <b-button
     @click="onClick()"
+    id="submit-query"
     class="mt-2"
     variant="primary"
     v-bind:disabled="loading || disabled"
