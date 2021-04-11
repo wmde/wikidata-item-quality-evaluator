@@ -74,8 +74,12 @@ export default {
         const response = await this.service.query(value);
         const results = response.results.bindings;
 
+        const itemKey = Object.entries(results[0])
+          .map(([key, value]) => value.type === "uri" && key)
+          .filter(Boolean)[0];
+
         const list = Object.values(results).map(result => {
-          const res = result.item.value.split("/");
+          const res = result[itemKey].value.split("/");
           return res[res.length - 1];
         });
 

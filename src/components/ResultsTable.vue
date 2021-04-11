@@ -11,7 +11,7 @@
       <a
         v-bind:href="'https://www.wikidata.org/wiki/' + data.item.title"
         target="_blank"
-        >{{ generateLabel(data) }})</a
+        >{{ generateLabel(data) }}</a
       >
     </template>
   </b-table>
@@ -65,8 +65,9 @@ export default Vue.extend({
   },
   methods: {
     generateLabel(data: ResultItem) {
+      console.log(data)
       if (data.value) {
-        return `${data.value} (${data.item.title}`;
+        return `${data.value} (${data.item.title})`;
       }
       return data.item.title;
     }
