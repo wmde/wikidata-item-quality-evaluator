@@ -35,9 +35,6 @@ export default Vue.extend({
       type: Boolean,
       required: false
     }
-  },
-  mounted() {
-    console.log(this.loading);
   }
 });
 </script>
