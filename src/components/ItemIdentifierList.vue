@@ -1,11 +1,13 @@
 <template>
   <div>
     <b-textarea
+      class="rounded-0"
       @keydown="onKeyDown"
       @paste="onPaste"
       v-model="itemList"
       v-bind:readonly="loading"
     />
+    <v-error-message :error="error"> </v-error-message>
     <p class="mt-2">One Item-identifier (like Q1234) on each line</p>
     <b-row align-h="end" no-gutters>
       <v-submit-query-button
@@ -23,6 +25,7 @@ import { Vue } from "vue-property-decorator";
 import ArticleQualityService from "@/ArticleQualityService";
 import store from "@/store";
 import SubmitQueryButton from "./SubmitQueryButton.vue";
+import ErrorMessage from "./ErrorMessage.vue";
 
 const AlphaNumericAndNewlineRegex = /[^a-zA-Z0-9\n]/;
 const ITEM_LIST_KEY = "wikidata.itemQuality.ui.itemList";
@@ -30,11 +33,13 @@ const ITEM_LIST_KEY = "wikidata.itemQuality.ui.itemList";
 export default Vue.extend({
   data() {
     return {
-      itemList: localStorage[ITEM_LIST_KEY] || ""
+      itemList: localStorage[ITEM_LIST_KEY] || "",
+      error: ""
     };
   },
   components: {
-    "v-submit-query-button": SubmitQueryButton
+    "v-submit-query-button": SubmitQueryButton,
+    "v-error-message": ErrorMessage
   },
   watch: {
     itemList(newItemList) {
@@ -103,7 +108,7 @@ export default Vue.extend({
         this.$router.push({ path: "/results" });
       } catch (e) {
         console.error(e);
-        store.commit("setError", true);
+        this.error = e.description;
       }
       store.commit("setLoading", false);
     }
