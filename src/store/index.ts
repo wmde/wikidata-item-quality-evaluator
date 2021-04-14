@@ -33,10 +33,13 @@ export default new Vuex.Store<StoreState>({
   },
   getters: {
     totalAverageScore(state) {
-      const total = state.results
-        .filter(res => !res.missing)
-        .reduce((acc, result) => (acc += result.score), 0);
-      const average = total / state.results.filter(res => !res.missing).length;
+      const foundResults = state.results.filter(res => !res.missing);
+
+      const total = foundResults.reduce(
+        (acc, result) => (acc += result.score),
+        0
+      );
+      const average = total / foundResults.length;
       return average || 0;
     }
   },
