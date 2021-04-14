@@ -25,7 +25,7 @@
       could not be found:
       {{ missingItems.join(", ") }}
     </p>
-    <p>
+    <p class="mb-0">
       Average quality score based on the {{ results.length }} Item{{
         results.length > 1 ? `s` : ``
       }}
