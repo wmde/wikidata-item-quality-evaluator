@@ -1,6 +1,6 @@
 # Wikidata Item Quality Evaluator
 
-For a live demo, visit the [Wikidata Item Quality Evaluator](https://wikidata-quality-monitor.netlify.app/)
+For a live demo, visit the [Wikidata Item Quality Evaluator](https://item-quality-evaluator.toolforge.org/)
 
 The Wikidata Item Quality Evaluator is designed to identify Items with low quality scores to help editors easily find the areas which they should spend their time improving the data.
 
