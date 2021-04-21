@@ -87,7 +87,7 @@ export default Vue.extend({
         // Clean up any whitespaces
         const cleanedItemList = itemList
           .replace(/^\s*[\r\n]/gm, "")
-          .replaceAll("q", "Q") // Capitalise Q
+          .replace(/q/g, "Q") // Capitalise Q
           .split("\n");
 
         // Remove last item if it's a blank line
