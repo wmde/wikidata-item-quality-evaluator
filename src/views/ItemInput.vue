@@ -21,7 +21,6 @@
           <SPARQLEditor />
         </b-tab>
       </b-tabs>
-      <b-alert variant="danger" v-bind:show="!!error">{{ error }}</b-alert>
     </div>
   </div>
 </template>
@@ -31,7 +30,6 @@ import { Vue } from "vue-property-decorator";
 import ItemIdentifierList from "@/components/ItemIdentifierList.vue"; // @ is an alias to /src
 import SPARQLEditor from "@/components/SPARQLEditor.vue";
 import ORESExplanation from "@/components/ORESExplanation.vue";
-import store from "@/store";
 
 const ACTIVE_TAB_KEY = "wikidata.itemQuality.ui.activeItemsInputTab";
 
@@ -48,13 +46,7 @@ export default Vue.extend({
   },
   watch: {
     activeItemsInputTab(newActiveTab) {
-      store.commit("setError", null);
       localStorage[ACTIVE_TAB_KEY] = newActiveTab;
-    }
-  },
-  computed: {
-    error() {
-      return store.state.error;
     }
   }
 });

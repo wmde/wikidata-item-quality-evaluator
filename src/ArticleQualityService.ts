@@ -6,6 +6,12 @@ import {
   OresScore,
   Result
 } from "./ArticleQualityService.types";
+
+export const ERROR_CODES = {
+  WIKIDATA_GET: 200,
+  WIKIDATA_PARSE: 300,
+  ORES: 400
+};
 class ArticleQualityService {
   private batchSize = 50;
   private maxWorkers = 2;
@@ -69,9 +75,10 @@ class ArticleQualityService {
     batchScores.map(scores => {
       for (const [key, value] of Object.entries(scores || {})) {
         articleQuality[key].score = this.computeWeightedSum(
-          value.itemquality.score
+          value[this.modelName].score
         );
-        articleQuality[key].probability = value.itemquality.score.probability;
+        articleQuality[key].probability =
+          value[this.modelName].score.probability;
       }
     });
 
@@ -96,17 +103,26 @@ class ArticleQualityService {
     response: WikidataResponseRaw
   ): WikidataResponseParsed {
     const parsed: WikidataResponseParsed = {};
-    Object.values(response.query.pages).map(
-      page =>
-        (parsed[page.revisions ? page.revisions[0].revid : page.title] = {
-          pageid: page.pageid,
-          revid: page.revisions && page.revisions[0].revid,
-          title: page.title,
-          missing: page.missing,
-          label: page.entityterms && page.entityterms.label?.join(", ")
-        })
-    );
-    return parsed;
+    try {
+      Object.values(response.query.pages).map(
+        page =>
+          (parsed[page.revisions ? page.revisions[0].revid : page.title] = {
+            pageid: page.pageid,
+            revid: page.revisions && page.revisions[0].revid,
+            title: page.title,
+            missing: page.missing,
+            label: page.entityterms && page.entityterms.label?.join(", ")
+          })
+      );
+      return parsed;
+    } catch (e) {
+      throw {
+        code: ERROR_CODES.WIKIDATA_PARSE,
+        description:
+          "There was a problem parsing the results from the APIs. This is probably a problem with our code. <br>If you know how, <a href='https://phabricator.wikimedia.org/tag/item_quality_evaluator/' target='_blank'> report the issue</a>.",
+        message: e.message
+      };
+    }
   }
 
   /**
@@ -128,7 +144,13 @@ class ArticleQualityService {
         .then(data => data.json())
         .then(this.parseWikidataResponse);
     } catch (e) {
-      throw "Error getting revisions from Wikidata | " + e.message;
+      throw {
+        code: e.code || ERROR_CODES.WIKIDATA_GET,
+        description:
+          e.description ||
+          "There was a problem connecting to the Wikidata service. Please check your internet connection or try again later",
+        message: e.message
+      };
     }
   }
 
@@ -149,10 +171,15 @@ class ArticleQualityService {
       return await fetch(queryUrl)
         .then(data => data.json())
         .then(
-          response => response.wikidatawiki && response.wikidatawiki.scores
+          response => response[this.dbname] && response[this.dbname].scores
         );
     } catch (e) {
-      throw "ORES Error: " + e.message;
+      throw {
+        code: ERROR_CODES.ORES,
+        description:
+          "There was a problem connecting to the ORES service. Please check your internet connection or try again later",
+        message: e.message
+      };
     }
   }
 
@@ -176,6 +203,9 @@ class ArticleQualityService {
 
   /**
    * Computes the weighted sum of an ORES score object
+   *
+   * The ORES score is calculated by weight of the most relevant score.
+   * See ORES on https://www.wikidata.org/wiki/Wikidata:Item_quality#ORES
    *
    * @param score An ORES score object
    */

@@ -17,17 +17,5 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: ${{ runner.os }}-node-
       - run: npm ci # install dependencies
-      - run: npm run build --if-present # build the project
       - run: npm run test:unit # run the tests
-      - uses: actions/upload-artifact@v2
-        with:
-          name: deploy-artifact
-          path: dist/
-      # deploy site to netlify using secrets created on repository
-      - uses: netlify/actions/cli@master
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-        with:
-          args: deploy --dir=dist --prod
-          secrets: '["NETLIFY_AUTH_TOKEN", "NETLIFY_SITE_ID"]'
+      - run: npm run build --if-present # build the project

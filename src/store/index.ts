@@ -10,7 +10,6 @@ interface StoreState {
   unprocessedItems: Array<string>;
   userHasQueried: boolean;
   loading: boolean;
-  error: string | null;
 }
 
 export default new Vuex.Store<StoreState>({
@@ -19,8 +18,7 @@ export default new Vuex.Store<StoreState>({
     missingItems: [],
     unprocessedItems: [],
     userHasQueried: false,
-    loading: false,
-    error: null
+    loading: false
   },
   mutations: {
     updateResults(state, payload) {
@@ -30,26 +28,18 @@ export default new Vuex.Store<StoreState>({
       state.userHasQueried = true;
     },
     setLoading(state, payload) {
-      if (payload) {
-        state.error = null;
-      }
       state.loading = payload;
-    },
-    setError(state, payload) {
-      if (payload === true) {
-        state.error =
-          "There was a problem parsing the results from the APIs. This is probably a problem with our code. If you know how, report the issue at [link]";
-        return;
-      }
-      state.error = payload;
     }
   },
   getters: {
     totalAverageScore(state) {
-      const total = state.results
-        .filter(res => !res.missing)
-        .reduce((acc, result) => (acc += result.score), 0);
-      const average = total / state.results.filter(res => !res.missing).length;
+      const foundResults = state.results.filter(res => !res.missing);
+
+      const total = foundResults.reduce(
+        (acc, result) => (acc += result.score),
+        0
+      );
+      const average = total / foundResults.length;
       return average || 0;
     }
   },
