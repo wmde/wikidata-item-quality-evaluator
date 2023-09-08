@@ -1,33 +1,24 @@
 import ArticleQualityService from "@/ArticleQualityService";
-import fetchMock from "fetch-mock";
+import fetchMock from "jest-fetch-mock";
 import {
-  mockCalculatedOresScores,
-  mockOresScores,
-  mockOresScoresResponse,
+  getMockQualityScoresResponseFor,
+  mockCalculatedQualityScores,
   mockRevisions,
   mockRevisionsResponse
 } from "./ArticleQualityService.mock";
 
-fetchMock.mock(
-  "https://www.wikidata.org/w/api.php?action=query&format=json&formatversion=2&prop=revisions|entityterms&titles=Q67|Q761|Q1235&origin=*",
-  {
-    status: 200,
-    body: mockRevisionsResponse
-  }
-);
-
-fetchMock.mock(
-  "https://ores.wikimedia.org/v3/scores/wikidatawiki?models=itemquality&revids=1363285722|1363329108|1367880583",
-  {
-    status: 200,
-    body: mockOresScoresResponse
-  }
-);
+fetchMock.enableMocks();
 
 describe("ArticleQualityService", () => {
   const service = new ArticleQualityService();
+  beforeEach(() => {
+    // @ts-ignore
+    fetch.resetMocks();
+  });
 
   it("gets the latest revisions for a set of Item ids", async () => {
+    // @ts-ignore
+    fetch.mockResponseOnce(JSON.stringify(mockRevisionsResponse));
     const revisions = await service.getLatestRevisions([
       "Q67",
       "Q761",
@@ -36,19 +27,21 @@ describe("ArticleQualityService", () => {
     expect(JSON.stringify(revisions)).toEqual(JSON.stringify(mockRevisions));
   });
 
-  it("gets the ORES scores for a set of revisions", async () => {
-    const scores = await service.getOresScores(mockRevisions);
-    expect(JSON.stringify(scores)).toEqual(JSON.stringify(mockOresScores));
-  });
-
   it("calculates the average score for all items", async () => {
+    
+    fetch
+    // @ts-ignore
+      .once(JSON.stringify(mockRevisionsResponse))
+      .once(JSON.stringify(getMockQualityScoresResponseFor("1363285722")))
+      .once(JSON.stringify(getMockQualityScoresResponseFor("1363329108")))
+      .once(JSON.stringify(getMockQualityScoresResponseFor("1367880583")));
     const { results } = await service.calculateArticleQuality([
       "Q67",
       "Q761",
       "Q1235"
     ]);
     expect(JSON.stringify(results)).toEqual(
-      JSON.stringify(mockCalculatedOresScores)
+      JSON.stringify(mockCalculatedQualityScores)
     );
   });
 

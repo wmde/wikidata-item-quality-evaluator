@@ -42,15 +42,19 @@ export interface Result extends WikidataRevision {
   };
 }
 
-export interface OresScoresResponse {
-  itemquality: {
-    score: OresScore;
-  };
+export interface QualityScoresResponse {
+  [key: string]: ModelScores;
 }
 
-export interface OresScore {
+export interface QualityScore {
   prediction: string;
   probability: {
     [key: string]: number;
+  };
+}
+
+export interface ModelScores {
+  [key: string]: {
+    score: QualityScore;
   };
 }
