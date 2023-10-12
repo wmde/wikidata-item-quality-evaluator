@@ -22,7 +22,7 @@
     "vue-property-decorator": "^9.1.2",
     "vue-router": "^3.2.0",
     "vuex": "^3.4.0",
-    "wikidata-query-gui": "git+https://github.com/wikimedia/wikidata-query-gui.git"
+    "wikidata-query-gui": "git+https://github.com/wikimedia/wikidata-query-gui.git#a12539cf0c10f55964366ec9054dd27f9d9223a5"
   },
   "devDependencies": {
     "@babel/polyfill": "^7.11.5",
