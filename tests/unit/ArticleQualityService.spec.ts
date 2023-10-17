@@ -28,9 +28,8 @@ describe("ArticleQualityService", () => {
   });
 
   it("calculates the average score for all items", async () => {
-    
     fetch
-    // @ts-ignore
+      // @ts-ignore
       .once(JSON.stringify(mockRevisionsResponse))
       .once(JSON.stringify(getMockQualityScoresResponseFor("1363285722")))
       .once(JSON.stringify(getMockQualityScoresResponseFor("1363329108")))
