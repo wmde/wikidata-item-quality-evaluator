@@ -33,7 +33,7 @@
       <p>
         <strong>How is the score calculated</strong>
         <br />
-        We trained the ORES algorithm by giving it Items that were scored to
+        We trained the quality algorithm by giving it Items that were scored to
         belong in one of 5 quality categories. Now, if the algorithm is given a new
         Item, it estimates the the likelyhood that a given Item falls in each of
         the 5 possible quality categories. To get one score for an Item, we
@@ -54,13 +54,11 @@
           >GitHub</a
         >.
         <br />
-        You can read more about
-        <a href="https://www.mediawiki.org/wiki/ORES" target="_blank">ORES</a>
-        in Wikidata in
+        You can read more about quality score calculation in Wikidata
         <a
-          href="https://blog.wikimedia.de/2016/01/02/teaching-machines-to-make-your-life-easier-quality-work-on-wikidata/"
+          href="https://wikitech.wikimedia.org/wiki/Machine_Learning/LiftWing"
           target="_blank"
-          >this blog post</a
+          >here</a
         >.
       </p></b-modal
     >

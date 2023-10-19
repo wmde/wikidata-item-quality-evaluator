@@ -23,7 +23,7 @@ export default Vue.extend({
       const results = this.results.map(result => ({
         "Item label": result.label,
         "Item ID": result.title,
-        "Weighted ORES Score": result.score.toFixed(2)
+        "Weighted Quality Score": result.score.toFixed(2)
       }));
 
       const csv = Papa.unparse(results);

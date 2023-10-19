@@ -2,21 +2,20 @@ import asyncPool from "tiny-async-pool";
 import {
   WikidataResponseParsed,
   WikidataResponseRaw,
-  OresScoresResponse,
-  OresScore,
+  QualityScoresResponse,
+  QualityScore,
   Result
 } from "./ArticleQualityService.types";
 
 export const ERROR_CODES = {
   WIKIDATA_GET: 200,
   WIKIDATA_PARSE: 300,
-  ORES: 400
+  LIFTWING: 400
 };
 class ArticleQualityService {
   private batchSize = 50;
   private maxWorkers = 2;
 
-  private oresHost = "https://ores.wikimedia.org";
   private weights: { [key: string]: number } = {
     E: 1,
     D: 2,
@@ -61,24 +60,26 @@ class ArticleQualityService {
       input => this.getLatestRevisions(input)
     );
 
-    // Get the ORES scores for the revisions
-    const batchScores = await asyncPool(
+    // Get the Quality scores for the revisions
+    const batchResponses = await asyncPool(
       this.maxWorkers,
       batchRevisions,
-      input => this.getOresScores(input)
+      input => this.provideScores(input)
     );
 
     // Assign the scores to the revisions
     const articleQuality: {
       [key: string]: Result;
     } = Object.assign({}, ...batchRevisions.flat());
-    batchScores.map(scores => {
-      for (const [key, value] of Object.entries(scores || {})) {
-        articleQuality[key].score = this.computeWeightedSum(
-          value[this.modelName].score
-        );
-        articleQuality[key].probability =
-          value[this.modelName].score.probability;
+    batchResponses.forEach(responses => {
+      for (const response of responses as QualityScoresResponse[]) {
+        for (const [revId, content] of Object.entries(response || {})) {
+          articleQuality[revId].score = this.computeWeightedSum(
+            content[this.modelName].score
+          );
+          articleQuality[revId].probability =
+            content[this.modelName].score.probability;
+        }
       }
     });
 
@@ -95,7 +96,7 @@ class ArticleQualityService {
   }
 
   /**
-   * Prepares the response from the Wikidata API to send to ORES
+   * Prepares the response from the Wikidata API to send to Liftwing
    *
    * @param response Raw JSON response from Wikidata API
    */
@@ -154,33 +155,38 @@ class ArticleQualityService {
     }
   }
 
-  /**
-   * Gets the ORES scores for a list of revisions
-   *
-   * @param revisions Response from the Wikidata API parsed through parseWikidataResponse()
-   */
-  public async getOresScores(
-    revisions: WikidataResponseParsed
-  ): Promise<OresScoresResponse | void> {
-    const validRevisions = Object.values(revisions).filter(rev => !rev.missing);
+  private async provideScores(
+    batchRevisions: WikidataResponseParsed
+  ): Promise<void | QualityScoresResponse[]> {
+    // get revisions as numbers
+    const revisions = this.extractRevisions(batchRevisions);
+    // get a promise with all the scores for each revision
+    const scoresPromises = revisions.map(revision =>
+      this.getQualityScores(revision)
+    );
 
-    const queryUrl = `${this.oresHost}/v3/scores/${this.dbname}?models=${
-      this.modelName
-    }&revids=${validRevisions.map(rev => rev.revid).join("|")}`;
-    try {
-      return await fetch(queryUrl)
-        .then(data => data.json())
-        .then(
-          response => response[this.dbname] && response[this.dbname].scores
-        );
-    } catch (e) {
-      throw {
-        code: ERROR_CODES.ORES,
-        description:
-          "There was a problem connecting to the ORES service. Please check your internet connection or try again later",
-        message: e.message
-      };
-    }
+    return Promise.all(scoresPromises);
+  }
+
+  private extractRevisions(response: WikidataResponseParsed): Array<number> {
+    return Object.values(response)
+      .filter(rev => !rev.missing)
+      .map(rev => Number(rev.revid));
+  }
+
+  private async getQualityScores(
+    revision: number
+  ): Promise<QualityScoresResponse> {
+    const response = await fetch(
+      "https://api.wikimedia.org/service/lw/inference/v1/models/wikidatawiki-itemquality:predict",
+      {
+        method: "POST",
+        /* eslint-disable @typescript-eslint/camelcase */
+        body: JSON.stringify({ rev_id: revision })
+      }
+    );
+    const data = await response.json();
+    return data.wikidatawiki.scores;
   }
 
   /**
@@ -202,14 +208,14 @@ class ArticleQualityService {
   }
 
   /**
-   * Computes the weighted sum of an ORES score object
+   * Computes the weighted sum of a LiftWing score object
    *
-   * The ORES score is calculated by weight of the most relevant score.
-   * See ORES on https://www.wikidata.org/wiki/Wikidata:Item_quality#ORES
+   * The LiftWing score is calculated by weight of the most relevant score.
+   * See LiftWing on https://wikitech.wikimedia.org/wiki/Machine_Learning/LiftWing
    *
-   * @param score An ORES score object
+   * @param score A quality score object
    */
-  private computeWeightedSum(score: OresScore) {
+  private computeWeightedSum(score: QualityScore) {
     const clsProba = score.probability;
     let weightedSum = 0;
     for (const cls in clsProba) {

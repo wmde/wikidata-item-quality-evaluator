@@ -91,106 +91,69 @@ export const mockRevisions = {
   }
 };
 
-export const mockOresScoresResponse = {
-  wikidatawiki: {
-    models: {
-      itemquality: {
-        version: "0.5.0"
-      }
-    },
-    scores: {
-      "1363285722": {
+export function getMockQualityScoresResponseFor(revId: string) {
+  const response = {
+    wikidatawiki: {
+      models: {
         itemquality: {
-          score: {
-            prediction: "A",
-            probability: {
-              A: 0.8670674579788645,
-              B: 0.10351433099213198,
-              C: 0.023287000149854437,
-              D: 0.0035507445036629228,
-              E: 0.0025804663754859978
-            }
-          }
+          version: "0.5.0"
         }
       },
-      "1363329108": {
-        itemquality: {
-          score: {
-            prediction: "A",
-            probability: {
-              A: 0.8828895279282934,
-              B: 0.09098863535251028,
-              C: 0.02094533949830334,
-              D: 0.003010187630113764,
-              E: 0.0021663095907791248
-            }
-          }
-        }
-      },
-      "1367880583": {
-        itemquality: {
-          score: {
-            prediction: "B",
-            probability: {
-              A: 0.23725823263223536,
-              B: 0.7166130678139061,
-              C: 0.036345944365185616,
-              D: 0.005664660117133298,
-              E: 0.00411809507153952
-            }
-          }
-        }
+      scores: {
+        [revId]: {}
       }
     }
-  }
-};
+  };
 
-export const mockOresScores = {
-  "1363285722": {
+  const score = {
     itemquality: {
       score: {
-        prediction: "A",
-        probability: {
-          A: 0.8670674579788645,
-          B: 0.10351433099213198,
-          C: 0.023287000149854437,
-          D: 0.0035507445036629228,
-          E: 0.0025804663754859978
-        }
+        prediction: "",
+        probability: {}
       }
     }
-  },
-  "1363329108": {
-    itemquality: {
-      score: {
-        prediction: "A",
-        probability: {
-          A: 0.8828895279282934,
-          B: 0.09098863535251028,
-          C: 0.02094533949830334,
-          D: 0.003010187630113764,
-          E: 0.0021663095907791248
-        }
-      }
-    }
-  },
-  "1367880583": {
-    itemquality: {
-      score: {
-        prediction: "B",
-        probability: {
-          A: 0.23725823263223536,
-          B: 0.7166130678139061,
-          C: 0.036345944365185616,
-          D: 0.005664660117133298,
-          E: 0.00411809507153952
-        }
-      }
-    }
-  }
-};
+  };
 
-export const mockCalculatedOresScores = [
+  switch (revId) {
+    case "1363285722":
+      score.itemquality.score.prediction = "A";
+      score.itemquality.score.probability = {
+        A: 0.8670674579788645,
+        B: 0.10351433099213198,
+        C: 0.023287000149854437,
+        D: 0.0035507445036629228,
+        E: 0.0025804663754859978
+      };
+      response.wikidatawiki.scores[revId] = score;
+      return response;
+
+    case "1363329108":
+      score.itemquality.score.prediction = "A";
+      score.itemquality.score.probability = {
+        A: 0.8828895279282934,
+        B: 0.09098863535251028,
+        C: 0.02094533949830334,
+        D: 0.003010187630113764,
+        E: 0.0021663095907791248
+      };
+      response.wikidatawiki.scores[revId] = score;
+      return response;
+
+    case "1367880583":
+      score.itemquality.score.prediction = "B";
+      score.itemquality.score.probability = {
+        A: 0.23725823263223536,
+        B: 0.7166130678139061,
+        C: 0.036345944365185616,
+        D: 0.005664660117133298,
+        E: 0.00411809507153952
+      };
+      response.wikidatawiki.scores[revId] = score;
+      return response;
+  }
+}
+
+export const mockCalculatedQualityScores = [
   {
     pageid: 1068,
     revid: 1363285722,

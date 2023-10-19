@@ -47,12 +47,6 @@
       </b-col>
     </b-row>
     <ResultsTable />
-    <p>
-      The quality scores are created by ORES, a machine learning tool.
-      <a href="https://ores.wikimedia.org/" target="_blank"
-        >Learn more about how it works</a
-      >
-    </p>
   </div>
 </template>
 <style lang="scss" scoped>
